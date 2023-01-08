@@ -1,25 +1,40 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import React from 'react';
-import { FontAwesome } from '@expo/vector-icons';
 
 import colors from '../constants/colors';
 
-const Input = ({ label, icon, size = 15, IconPack, errorText }) => (
-  <View style={styles.container}>
-    <Text style={styles.label}>{label}</Text>
+const Input = (props) => {
+  const onChangeText = (text) => {
+    props.onInputChange(props.id, text);
+  };
 
-    <View style={styles.inputContainer}>
-      {icon && <IconPack name={icon} size={size} style={styles.icon} />}
-      <TextInput style={styles.input} />
-    </View>
+  return (
+    <View style={styles.container}>
+      <Text style={styles.label}>{props.label}</Text>
 
-    {errorText && (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>{errorText}</Text>
+      <View style={styles.inputContainer}>
+        {props.icon && (
+          <props.IconPack
+            name={props.icon}
+            size={props.size}
+            style={styles.icon}
+          />
+        )}
+        <TextInput
+          {...props}
+          style={styles.input}
+          onChangeText={onChangeText}
+        />
       </View>
-    )}
-  </View>
-);
+
+      {props.errorText && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{props.errorText}</Text>
+        </View>
+      )}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
