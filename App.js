@@ -11,6 +11,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import ChatListScreen from './screens/ChatListScreen';
 import ChatSettingsScreen from './screens/ChatSettingsScreen';
+import SettingsScreen from './screens/SettingsScreen';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -20,12 +21,20 @@ const Stack = createStackNavigator();
 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator screenOptions={{ headerTitle: '' }}>
       <Tab.Screen
         name="Chat List"
         component={ChatListScreen}
         options={{
-          tabBarLabel: 'Chat List',
+          tabBarLabel: 'Chats',
+          // tabBarIcon: ({ color, size }) => {}
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          tabBarLabel: 'Settings',
           // tabBarIcon: ({ color, size }) => {}
         }}
       />
@@ -77,7 +86,13 @@ export default function App() {
     <SafeAreaProvider style={styles.container} onLayout={onLayout}>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Home" component={ChatListScreen} />
+          <Stack.Screen
+            name="Home"
+            component={TabNavigator}
+            options={{
+              headerShown: false,
+            }}
+          />
           <Stack.Screen
             name="ChatSettings"
             component={ChatSettingsScreen}
