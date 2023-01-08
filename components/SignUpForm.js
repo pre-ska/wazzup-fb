@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useCallback, useReducer } from 'react';
 import { FontAwesome, Feather } from '@expo/vector-icons';
 
 import Input from './Input';
 import SubmitButton from '../components/SubmitButton';
 import { validateInput } from '../utils/actions/formActions';
+import { reducer } from '../utils/reducers/formReducer';
+
+const initialState = {
+  inputValidities: {
+    firstName: false,
+    lastName: false,
+    email: false,
+    password: false,
+  },
+  formIsValid: false,
+};
 
 const SignUpForm = () => {
-  const inputChangeHandler = (inputId, inputValue) => {
-    validateInput(inputId, inputValue);
-  };
+  const [formState, dispatchFormState] = useReducer(reducer, initialState);
+
+  const inputChangeHandler = useCallback(
+    (inputId, inputValue) => {
+      const result = validateInput(inputId, inputValue);
+      dispatchFormState({
+        inputId,
+        validationResult: result,
+      });
+    },
+    [dispatchFormState]
+  );
 
   return (
     <>
@@ -17,7 +37,7 @@ const SignUpForm = () => {
         label="First name"
         icon="user-o"
         IconPack={FontAwesome}
-        errorText="this is an error"
+        errorText={formState.inputValidities.firstName}
         onInputChange={inputChangeHandler}
         autoCapitalize="none"
       />
@@ -26,7 +46,7 @@ const SignUpForm = () => {
         label="Last name"
         icon="user-o"
         IconPack={FontAwesome}
-        errorText="this is an error"
+        errorText={formState.inputValidities.lastName}
         onInputChange={inputChangeHandler}
         autoCapitalize="none"
       />
@@ -35,7 +55,7 @@ const SignUpForm = () => {
         label="Email"
         icon="mail"
         IconPack={Feather}
-        errorText="this is an error"
+        errorText={formState.inputValidities.email}
         onInputChange={inputChangeHandler}
         autoCapitalize="none"
         keyboardType="email-address"
@@ -47,7 +67,7 @@ const SignUpForm = () => {
         autoCapitalize="none"
         secureTextEntry
         IconPack={Feather}
-        errorText="this is an error"
+        errorText={formState.inputValidities.password}
         onInputChange={inputChangeHandler}
       />
 
@@ -55,6 +75,7 @@ const SignUpForm = () => {
         title="Sign up"
         onPress={() => console.log('button pressed')}
         style={{ marginTop: 20 }}
+        disabled={!formState.formIsValid}
       />
     </>
   );
