@@ -12,13 +12,20 @@ const authSlice = createSlice({
       const { payload } = action;
       state.token = payload.token;
       state.userData = payload.userData;
-    },
-    setDidTryAutoLogin: (state) => {
       state.didTryAutoLogin = true;
+    },
+    setDidTryAutoLogin: (state, action) => {
+      state.didTryAutoLogin = true;
+    },
+    logout: (state, action) => {
+      state.token = null;
+      state.userData = null;
+      state.didTryAutoLogin = false;
     },
   },
 });
 
+export const logout = authSlice.actions.logout; // akcija iz reducers objekta
 export const setDidTryAutoLogin = authSlice.actions.setDidTryAutoLogin; // akcija iz reducers objekta
 export const authenticate = authSlice.actions.authenticate; // akcija iz reducers objekta
 
