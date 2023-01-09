@@ -5,6 +5,7 @@ const authSlice = createSlice({
   initialState: {
     token: null,
     userData: null,
+    didTryAutoLogin: false,
   },
   reducers: {
     authenticate: (state, action) => {
@@ -14,9 +15,13 @@ const authSlice = createSlice({
 
       console.log(state);
     },
+    setDidTryAutoLogin: (state) => {
+      state.didTryAutoLogin = true;
+    },
   },
 });
 
+export const setDidTryAutoLogin = authSlice.actions.setDidTryAutoLogin; // akcija iz reducers objekta
 export const authenticate = authSlice.actions.authenticate; // akcija iz reducers objekta
 
 export default authSlice.reducer; // metoda na authSlice po defaultu iz reduxa
