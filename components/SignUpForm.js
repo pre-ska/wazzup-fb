@@ -6,7 +6,8 @@ import SubmitButton from '../components/SubmitButton';
 import { validateInput } from '../utils/actions/formActions';
 import { reducer } from '../utils/reducers/formReducer';
 import { signUp } from '../utils/actions/authActions';
-import { Alert } from 'react-native';
+import { ActivityIndicator, Alert } from 'react-native';
+import colors from '../constants/colors';
 
 const initialState = {
   inputValues: {
@@ -26,11 +27,13 @@ const initialState = {
 
 const SignUpForm = () => {
   const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [formState, dispatchFormState] = useReducer(reducer, initialState);
 
   const inputChangeHandler = useCallback(
-    (inputId, inputValue) => {
+    async (inputId, inputValue) => {
       const result = validateInput(inputId, inputValue);
+
       dispatchFormState({
         inputId,
         validationResult: result,
@@ -48,6 +51,7 @@ const SignUpForm = () => {
 
   const authHandler = async () => {
     try {
+      setIsLoading(true);
       await signUp(
         formState.inputValues.firstName,
         formState.inputValues.lastName,
@@ -58,6 +62,7 @@ const SignUpForm = () => {
       setError(null);
     } catch (error) {
       setError(error.message);
+      setIsLoading(false);
     }
   };
 
@@ -102,12 +107,20 @@ const SignUpForm = () => {
         onInputChange={inputChangeHandler}
       />
 
-      <SubmitButton
-        title="Sign up"
-        onPress={authHandler}
-        style={{ marginTop: 20 }}
-        disabled={!formState.formIsValid}
-      />
+      {isLoading ? (
+        <ActivityIndicator
+          size={'small'}
+          color={colors.primary}
+          style={{ marginTop: 15 }}
+        />
+      ) : (
+        <SubmitButton
+          title="Sign up"
+          onPress={authHandler}
+          style={{ marginTop: 20 }}
+          disabled={!formState.formIsValid}
+        />
+      )}
     </>
   );
 };

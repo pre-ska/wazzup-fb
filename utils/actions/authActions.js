@@ -1,5 +1,6 @@
-import { getFirebaseApp } from '../firebaseHelper';
+import { getFirebaseApp } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { child, getDatabase, ref, set } from 'firebase/database';
 
 export const signUp = async (firstName, lastName, email, password) => {
   console.log(firstName, lastName, email, password);
@@ -9,6 +10,9 @@ export const signUp = async (firstName, lastName, email, password) => {
 
   try {
     const result = await createUserWithEmailAndPassword(auth, email, password);
+    const { uid } = result.user;
+    const userData = await createUser(firstName, lastName, email, uid);
+    console.log(userData);
   } catch (error) {
     // console.error(error.code);
     const errorCode = error.code;
@@ -24,4 +28,25 @@ export const signUp = async (firstName, lastName, email, password) => {
 
 export const signIn = (email, password) => {
   console.log(email, password);
+};
+
+const createUser = async (firstName, lastName, email, userId) => {
+  const firstLast = `${firstName} ${lastName}`.toLowerCase();
+
+  const userData = {
+    firstName,
+    lastName,
+    email,
+    firstLast,
+    userId,
+    signUpDate: new Date().toISOString(),
+  };
+
+  const dbRef = ref(getDatabase()); // referenca na cijelu DB
+
+  const childRef = child(dbRef, `users/${userId}`); // referenca na node, ako ne postoji- kreirat će ga
+
+  await set(childRef, userData); // spremi userData na childRef
+
+  return userData;
 };
