@@ -46,3 +46,24 @@ export const validatePassword = (id, value) => {
   const validationResult = validate({ [id]: value }, { [id]: constraints });
   return validationResult && validationResult[id];
 };
+
+export const validateLength = (id, value, minLength, maxLength, allowEmpty) => {
+  const constraints = {
+    presence: { allowEmpty },
+  };
+
+  if (!allowEmpty || value !== '') {
+    // da nemam više error messaga odjednom.....prazno i nije char
+    constraints.length = {};
+
+    if (minLength) {
+      constraints.length.minimum = minLength;
+    }
+    if (maxLength) {
+      constraints.length.maximum = maxLength;
+    }
+  }
+
+  const validationResult = validate({ [id]: value }, { [id]: constraints });
+  return validationResult && validationResult[id];
+};
