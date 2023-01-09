@@ -25,7 +25,6 @@ export const signUp = (firstName, lastName, email, password) => {
       const expiryDate = new Date(expirationTime);
       staveDataToStorage(accessToken, uid, expiryDate);
     } catch (error) {
-      // console.error(error.code);
       const errorCode = error.code;
 
       let message = 'Something went wrong';

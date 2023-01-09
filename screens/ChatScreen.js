@@ -20,7 +20,6 @@ const ChatScreen = () => {
   const [messageText, setMessageText] = useState('');
 
   const sendMessage = useCallback(() => {
-    console.log(messageText);
     setMessageText('');
   }, [messageText]);
 
