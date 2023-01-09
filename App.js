@@ -9,8 +9,10 @@ import * as Font from 'expo-font';
 
 import AppNavigator from './navigation/AppNavigator';
 import { store } from './store/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 LogBox.ignoreLogs(['AsyncStorage has been extracted']); // neki firebase log ...treba update
+// AsyncStorage.clear();
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
