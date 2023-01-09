@@ -7,6 +7,10 @@ import { validateInput } from '../utils/actions/formActions';
 import { reducer } from '../utils/reducers/formReducer';
 
 const initialState = {
+  inputValues: {
+    email: '',
+    password: '',
+  },
   inputValidities: {
     email: false,
     password: false,
@@ -23,10 +27,15 @@ const SignInForm = () => {
       dispatchFormState({
         inputId,
         validationResult: result,
+        inputValue,
       });
     },
     [dispatchFormState]
   );
+
+  const authHandler = () => {
+    signIn(formState.inputValues.email, formState.inputValues.password);
+  };
 
   return (
     <>
@@ -53,7 +62,7 @@ const SignInForm = () => {
 
       <SubmitButton
         title="Sign in"
-        onPress={() => console.log('button pressed')}
+        onPress={authHandler}
         style={{ marginTop: 20 }}
         disabled={!formState.formIsValid}
       />

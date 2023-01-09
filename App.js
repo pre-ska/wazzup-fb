@@ -1,11 +1,13 @@
 import 'react-native-gesture-handler';
 import { useCallback, useEffect, useState } from 'react';
 // import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { LogBox, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import AppNavigator from './navigation/AppNavigator';
+
+LogBox.ignoreLogs(['AsyncStorage has been extracted']); // neki firebase log ...treba update
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
