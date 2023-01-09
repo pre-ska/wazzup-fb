@@ -1,11 +1,14 @@
 import 'react-native-gesture-handler';
 import { useCallback, useEffect, useState } from 'react';
+import { Provider } from 'react-redux';
 // import { StatusBar } from 'expo-status-bar';
 import { LogBox, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
+
 import AppNavigator from './navigation/AppNavigator';
+import { store } from './store/store';
 
 LogBox.ignoreLogs(['AsyncStorage has been extracted']); // neki firebase log ...treba update
 
@@ -53,9 +56,11 @@ export default function App() {
   if (!appIsReady) return null;
 
   return (
-    <SafeAreaProvider style={styles.container} onLayout={onLayout}>
-      <AppNavigator />
-    </SafeAreaProvider>
+    <Provider store={store}>
+      <SafeAreaProvider style={styles.container} onLayout={onLayout}>
+        <AppNavigator />
+      </SafeAreaProvider>
+    </Provider>
   );
 }
 
