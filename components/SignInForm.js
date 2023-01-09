@@ -75,7 +75,7 @@ const SignInForm = () => {
         autoCapitalize="none"
         keyboardType="email-address"
         onInputChange={inputChangeHandler}
-        value={formState.inputValues.email}
+        initialValue={formState.inputValues.email}
       />
       <Input
         id="password"
@@ -86,7 +86,7 @@ const SignInForm = () => {
         autoCapitalize="none"
         secureTextEntry
         onInputChange={inputChangeHandler}
-        value={formState.inputValues.password}
+        initialValue={formState.inputValues.password}
       />
 
       {isLoading ? (

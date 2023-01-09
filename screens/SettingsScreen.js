@@ -6,12 +6,14 @@ import Input from '../components/Input';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import { validateInput } from '../utils/actions/formActions';
 import { reducer } from '../utils/reducers/formReducer';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
 import colors from '../constants/colors';
 import SubmitButton from '../components/SubmitButton';
+import { updateSignInUserData, userLogout } from '../utils/actions/authActions';
 
 const SettingsScreen = () => {
+  const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.userData);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,7 +48,18 @@ const SettingsScreen = () => {
     [dispatchFormState]
   );
 
-  const saveHandler = () => {};
+  const saveHandler = async () => {
+    const updatedValues = formState.inputValues;
+
+    try {
+      setIsLoading(true);
+      await updateSignInUserData(userData.userId, updatedValues);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <PageContainer>
@@ -108,6 +121,13 @@ const SettingsScreen = () => {
             disabled={!formState.formIsValid}
           />
         )}
+
+        <SubmitButton
+          title="Logout"
+          onPress={() => dispatch(userLogout())}
+          style={{ marginTop: 20 }}
+          color={colors.red}
+        />
       </ScrollView>
     </PageContainer>
   );
