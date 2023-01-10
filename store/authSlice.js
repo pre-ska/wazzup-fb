@@ -22,9 +22,15 @@ const authSlice = createSlice({
       state.userData = null;
       state.didTryAutoLogin = false;
     },
+    updateSignedInUserData: (state, action) => {
+      const { payload } = action;
+      state.userData = { ...state.userData, ...payload.newData };
+    },
   },
 });
 
+export const updateSignedInUserDataAction =
+  authSlice.actions.updateSignedInUserData; // akcija iz reducers objekta
 export const logout = authSlice.actions.logout; // akcija iz reducers objekta
 export const setDidTryAutoLogin = authSlice.actions.setDidTryAutoLogin; // akcija iz reducers objekta
 export const authenticate = authSlice.actions.authenticate; // akcija iz reducers objekta

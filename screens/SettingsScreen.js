@@ -10,19 +10,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
 import colors from '../constants/colors';
 import SubmitButton from '../components/SubmitButton';
-import { updateSignInUserData, userLogout } from '../utils/actions/authActions';
+import {
+  updateSignedInUserData,
+  userLogout,
+} from '../utils/actions/authActions';
+import { updateSignedInUserDataAction } from '../store/authSlice';
+import ProfileImage from '../components/ProfileImage';
 
 const SettingsScreen = () => {
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.userData);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  const firstName = userData.firstName || '';
+  const lastName = userData.lastName || '';
+  const email = userData.email || '';
+  const about = userData.about || '';
 
   const initialState = {
     inputValues: {
-      firstName: userData.firstName || '',
-      lastName: userData.lastName || '',
-      email: userData.email || '',
-      about: userData.about || '',
+      firstName,
+      lastName,
+      email,
+      about,
     },
     inputValidities: {
       firstName: undefined,
@@ -48,23 +59,48 @@ const SettingsScreen = () => {
     [dispatchFormState]
   );
 
-  const saveHandler = async () => {
+  const saveHandler = useCallback(async () => {
     const updatedValues = formState.inputValues;
 
     try {
       setIsLoading(true);
-      await updateSignInUserData(userData.userId, updatedValues);
+      await updateSignedInUserData(userData.userId, updatedValues);
+
+      dispatch(updateSignedInUserDataAction({ newData: updatedValues }));
+      setShowSuccessMessage(true);
+
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+      }, 3000);
     } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
     }
+  }, [formState, dispatch]);
+
+  const hasChanges = () => {
+    const currentValues = formState.inputValues;
+
+    return (
+      currentValues.firstName != firstName ||
+      currentValues.lastName != lastName ||
+      currentValues.email != email ||
+      currentValues.about != about
+    );
   };
 
   return (
     <PageContainer>
       <PageTitle text="Settings" />
-      <ScrollView>
+
+      <ScrollView contentContainerStyle={styles.formContainer}>
+        <ProfileImage
+          size={80}
+          userId={userData.userId}
+          uri={userData.profilePicture}
+        />
+
         <Input
           id="firstName"
           label="First name"
@@ -107,20 +143,25 @@ const SettingsScreen = () => {
           initialValue={userData.about}
         />
 
-        {isLoading ? (
-          <ActivityIndicator
-            size={'small'}
-            color={colors.primary}
-            style={{ marginTop: 15 }}
-          />
-        ) : (
-          <SubmitButton
-            title="Save"
-            onPress={saveHandler}
-            style={{ marginTop: 20 }}
-            disabled={!formState.formIsValid}
-          />
-        )}
+        <View style={{ marginTop: 20 }}>
+          {showSuccessMessage && <Text>Saved</Text>}
+          {isLoading ? (
+            <ActivityIndicator
+              size={'small'}
+              color={colors.primary}
+              style={{ marginTop: 15 }}
+            />
+          ) : (
+            hasChanges() && (
+              <SubmitButton
+                title="Save"
+                onPress={saveHandler}
+                style={{ marginTop: 20 }}
+                disabled={!formState.formIsValid}
+              />
+            )
+          )}
+        </View>
 
         <SubmitButton
           title="Logout"
@@ -138,5 +179,8 @@ export default SettingsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  formContainer: {
+    alignItems: 'center',
   },
 });
